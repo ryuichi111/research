@@ -1,0 +1,18 @@
+﻿<h2>検索結果</h2>
+
+<a href="./">戻る</a>
+
+@if (this.ViewBag.EvacuationFacilities != null)
+{
+    <p>@this.ViewBag.EvacuationFacilities.Count 件</p>
+    foreach (EvacuationFacilityLib.Models.EvacuationFacilityInfo facility in this.ViewBag.EvacuationFacilities)
+    {
+        <p>名称：@facility.Name</p>
+        <p>住所：@facility.Address</p>
+        <p>施設タイプ：@facility.FacilityType</p>
+        <p><a target="_blank" href='@System.String.Format("https://www.google.co.jp/maps/place/{0}+{1}", facility.Latitude, facility.Longitude)'>地図を表示</a></p>
+        <hr />
+        
+    }
+}
+

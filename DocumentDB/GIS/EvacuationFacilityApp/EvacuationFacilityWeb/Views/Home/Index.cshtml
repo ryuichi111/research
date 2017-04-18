@@ -1,0 +1,74 @@
+﻿
+<script type="text/javascript">
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            // POST用
+            $('#latitude').val(position.coords.latitude);
+            $('#longitude').val(position.coords.longitude);
+            // 表示用
+            $('#spanLatitude').html(position.coords.latitude);
+            $('#spanLongitude').html(position.coords.longitude);
+
+            $('#currentLocationGmapUrl').attr('href', 'https://www.google.co.jp/maps/place/' + position.coords.latitude + '+' + position.coords.longitude);
+        },
+        function (err) {
+            alert(err.code + ': ' + err.message);
+        });
+    } else {
+        alert('geolocation is not supported.');
+}
+
+</script>
+
+<style>
+.row {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+</style>
+
+@using (Html.BeginForm())
+{
+<div class="row">
+    <div class="col-xs-2"></div>
+    <div class="col-xs-8">
+        近隣の避難施設を検索します。
+    </div>
+    <div class="col-xs-2"></div>
+</div>
+<div class="row">
+    <div class="col-xs-5 text-right">
+        現在地：
+    </div>
+    <div class="col-xs-7">
+        緯度<span id="spanLatitude"></span> 経度：<span id="spanLongitude"></span>
+        <br />
+        <a id="currentLocationGmapUrl" target="_blank">地図を表示</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-5 text-right">
+        距離範囲：
+    </div>
+    <div class="col-xs-7">
+            <select id="distance" name="distance">
+                <option value="500">0.5 km 範囲内</option>
+                <option value="1000">1 km 範囲内</option>
+                <option value="3000">3 km 範囲内</option>
+                <option value="5000">5 km 範囲内</option>
+            </select>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-5 text-right">
+
+    </div>
+    <div class="col-xs-7">
+        <input type="hidden" id="latitude" name="latitude" />
+        <input type="hidden" id="longitude" name="longitude" />
+        <input type="submit" value="避難施設を検索" class="btn btn-default" />
+    </div>
+</div>
+}
+<hr />
+「navigator.geolocation.getCurrentPosition()」で現在位置を取得するので、LANだとIPが降られた場所で遠くになるかも・・・
