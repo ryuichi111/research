@@ -15,7 +15,7 @@ namespace CreateEvacuationFacilityDb
             // XMLをロードしてカスタムクラスコレクションに変換
             // xmlのパスは書き換えてください！
             List<EvacuationFacilityInfo> evacuationFacilityInfoList = 
-                GmlToCustomFormatConvertor.Load(@"F:\Projects\Research\GIS\Data\Tokyo\P20-12_13.xml");
+                GmlToCustomFormatConvertor.Load(@"J:\Projects\Github\research\DocumentDB\GIS\P20-12_13.xml");
 
             // カスタムクラスコレクションをDocumentDBに保存
             EvacuationFacilityInfoRepository.SaveEvacuationFacilityInfos(evacuationFacilityInfoList);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EvacuationFacilityLib.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +13,8 @@ namespace EvacuationFacilityWeb
     {
         protected void Application_Start()
         {
+            EvacuationFacilityInfoRepository.Initialize();
+
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
