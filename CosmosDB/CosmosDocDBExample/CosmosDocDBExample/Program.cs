@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CosmosDocDBExample
 {
@@ -31,6 +32,12 @@ namespace CosmosDocDBExample
             //CallFindById();
             //CallFindByIdWithParam();
             //CallDeleteById();
+            //CallUpdateDocument();
+            //CallHelloStoredProcedure();
+            //CallBulkReserveStoredProcedure();
+            //UsePreTrigger();
+            //UsePostTrigger();
+            UseUdf();
         }
 
         // リスト 9
@@ -163,6 +170,106 @@ namespace CosmosDocDBExample
             var manager = new DocumentDbManager();
 
             manager.DeleteById("スタンディングテーブル", "0000000004").Wait();
+        }
+
+
+        private static void CallHelloStoredProcedure()
+        {
+            var manager = new DocumentDbManager();
+
+            var createResult = manager.CreateStoredProcedure(@"..\..\\helloStoredProcedure.js").Result;
+            var callResult = manager.CallHelloStoredProcedure("Ryuichi Daigo").Result;
+
+            Console.WriteLine(callResult);
+
+        }
+
+        private static void CallBulkReserveStoredProcedure()
+        {
+            var manager = new DocumentDbManager();
+
+            var createResult = manager.CreateStoredProcedure(@"..\..\\bulkDeleteStoredProcedure.js").Result;
+            var callResult = manager.CallBulkDeleteStoredProcedure(new DateTime(2017, 6, 4, 0, 0, 0), new DateTime(2017, 6, 7, 23, 59, 59), "第１会議室").Result;
+
+            Console.WriteLine(callResult);
+        }
+
+        private static void UsePreTrigger()
+        {
+            var manager = new DocumentDbManager();
+
+            var createResult = manager.CreatePreTrigger(@"..\..\\validatePreTrriger.js").Result;
+
+            var assignMembers = new List<AssignMember>();
+            assignMembers.Add(new AssignMember()
+            { UserId = "tanaka", UserName = "田中和夫" });
+            RoomReservationInfo item = new RoomReservationInfo()
+            {
+                Id = "Pre0000000001",
+                Room = "第１会議室",
+                Title = "プリトリガーについて打ち合わせ",
+                ReservedUserId = "daigo",
+                ReservedUserName = "醍醐竜一",
+                Start = new DateTime(2017, 6, 30, 18, 09, 0),
+                End = new DateTime(2017, 6, 30, 19, 0, 0),
+                AssignMembers = assignMembers
+            };
+
+            var callResult = manager.CreateDocumentWithPreTrigger(item).Result;
+
+            Console.WriteLine(callResult);
+        }
+
+        private static void UsePostTrigger()
+        {
+            var manager = new DocumentDbManager();
+
+            var createResult = manager.CreatePostTrigger(@"..\..\\postTriggerExample.js").Result;
+
+            var assignMembers = new List<AssignMember>();
+            assignMembers.Add(new AssignMember()
+            { UserId = "tanaka", UserName = "田中和夫" });
+            assignMembers.Add(new AssignMember()
+            { UserId = "sakamoto", UserName = "坂本寛子" });
+            RoomReservationInfo item = new RoomReservationInfo()
+            {
+                Id = "A00004",
+                Room = "第１会議室",
+                Title = "Cosmos DB移行についての打ち合わせ",
+                ReservedUserId = "daigo",
+                ReservedUserName = "醍醐竜一",
+                Start = new DateTime(2017, 6, 3, 18, 09, 0),
+                End = new DateTime(2017, 6, 3, 10, 0, 0),
+                AssignMembers = assignMembers
+            };
+
+            var callResult = manager.CreateDocumentWithPostTrigger(item).Result;
+
+            Console.WriteLine(callResult);
+        }
+
+        private static void CallUpdateDocument()
+        {
+            var manager = new DocumentDbManager();
+
+            var reservation = manager.FindById("第１会議室", "0000000001");
+            reservation.Title = "変更!" + DateTime.Now.ToString("yyyyMMddHms");
+            var doc = manager.ReplaceDocument(reservation).Result;
+        }
+
+        private static void UseUdf()
+        {
+            var manager = new DocumentDbManager();
+
+            var createResult = manager.CreateUdf(@"..\..\\calcTimeUdf.js").Result;
+            var roomReservationInfos = manager.FindUsingUdf("第１会議室", 90);
+
+            Console.WriteLine(string.Format("{0}件", roomReservationInfos.Count));
+            foreach (var info in roomReservationInfos)
+            {
+                Console.WriteLine(
+                    string.Format("{0} / {1} / {2} ～ {3}", info.Room, info.Title, info.Start, info.End));
+            }
         }
     }
 }

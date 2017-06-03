@@ -43,6 +43,8 @@ namespace CosmosDocDBExample
         /// 参加メンバーを取得または設定します。
         /// </summary>
         public List<AssignMember> AssignMembers { get; set; }
+
+        public string _etag { get; set; }
     }
 
     public class AssignMember
