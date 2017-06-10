@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace CosmosMongoDBExample
 {
     public class RoomReservationInfo
     {
+        [JsonProperty(PropertyName ="_id")]
         public string Id { get; set; }
 
         /// <summary>

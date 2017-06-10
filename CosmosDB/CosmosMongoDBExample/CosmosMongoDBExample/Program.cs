@@ -62,7 +62,7 @@ namespace CosmosMongoDBExample
             roomReservationInfo.AssignMembers.Add(
                 new AssignMember() { UserId = "sakata", UserName = "坂田守" });
 
-            bool result = manager.CreateCollection().Result;
+            bool result = manager.CreateRoomReservationInfo(roomReservationInfo).Result;
         }
 
         public static void CallFindByRoom()
